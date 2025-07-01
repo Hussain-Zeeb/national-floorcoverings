@@ -1,17 +1,4 @@
-.text-category-color {
-    color: var(--category-color) !important;
-}
 
-.download-link {
-    svg {
-        width: 30px;
-        fill: var(--category-color);
-
-        &:hover {
-            fill: $paragon-404; // Assuming $paragon-404 is defined in your SCSS variables
-        }
-    }
-}
 
 
 .btn {
@@ -26,7 +13,7 @@
     text-align: center;
 
     &:hover {
-        background: $paragon-404; // Button color on hover
+        background: $navy-blue; // Button color on hover
     }
 }
 
@@ -43,3 +30,123 @@
  {
     display: block !important;
 }
+
+
+.e-con > .e-con-inner {
+
+    max-width: 100% !important;
+}
+
+
+
+
+
+
+
+// Elementor slideshow header with mask
+.header-with-mask {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    
+    // Ensure proper stacking
+    .elementor-background-slideshow {
+        z-index: 1;
+        transition: filter 0.3s ease;
+    }
+    
+    // Content container
+    .e-con-inner {
+        position: relative;
+        z-index: 3;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        will-change: opacity, transform;
+        
+        // Style any content inside
+        .elementor-widget-container {
+            text-align: center;
+            color: white;
+            
+            h1, h2, h3 {
+                font-size: clamp(2rem, 8vw, 6rem);
+                font-weight: bold;
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+                margin-bottom: 1rem;
+            }
+            
+            p {
+                font-size: clamp(1rem, 3vw, 1.5rem);
+                text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+    }
+    
+    // Auto-created mask overlay
+    .header-mask-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        opacity: 0;
+        pointer-events: none;
+        will-change: opacity, transform;
+        
+        // Default dark gradient
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.2) 0%,
+            rgba(0, 0, 0, 0.6) 50%,
+            rgba(0, 0, 0, 0.9) 100%
+        );
+        
+        // Brand color variant
+        &.brand-mask {
+            background: #{$navy-blue};
+
+            
+        }
+    }
+}
+
+// Mobile adjustments
+@media (max-width: 768px) {
+    .header-with-mask {
+        height: 70vh;
+        
+        .e-con-inner {
+            height: 70vh;
+            padding: 0 20px;
+        }
+    }
+}
+
+
+
+
+
+// Smooth scrolling base styles
+html.has-scroll-smooth {
+    overflow: hidden;
+}
+
+body {
+    transition: opacity 0.3s ease;
+    
+    // Fix for initial flash
+    &.is-loading {
+        opacity: 0;
+    }
+    
+    &.is-scrolling-smoothly {
+        opacity: 1;
+    }
+}
+
+

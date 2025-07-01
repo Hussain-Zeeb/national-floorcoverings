@@ -1,0 +1,415 @@
+// GSAP Pinned Sections Styles
+// ===========================
+
+// Variables
+$primary-color: #007cba;
+$secondary-color: #2c3e50;
+$text-color: #333;
+$light-bg: #f8f9fa;
+$white: #ffffff;
+$shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+$border-radius: 12px;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin section-spacing {
+  padding: 4rem 2rem;
+  
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+  }
+}
+
+@mixin text-gradient {
+  background: linear-gradient(135deg, $primary-color, $secondary-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Main Container
+.pinned-sections-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  
+  &.sections-template {
+    min-height: 100vh;
+  }
+}
+
+// Individual Section
+.pinned-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  
+  // Ensure proper stacking
+  &:first-child {
+    z-index: 10;
+  }
+  
+  &:nth-child(2) {
+    z-index: 9;
+  }
+  
+  &:nth-child(3) {
+    z-index: 8;
+  }
+  
+  // Continue pattern for more sections...
+  
+  // Section Number
+  .section-number {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-size: 6rem;
+    font-weight: 900;
+    color: rgba($primary-color, 0.1);
+    z-index: 1;
+    line-height: 1;
+    pointer-events: none;
+    
+    @media (max-width: 768px) {
+      font-size: 4rem;
+      top: 1rem;
+      right: 1rem;
+    }
+  }
+}
+
+// Content Panel
+.content-panel {
+  flex: 1;
+  max-width: 50%;
+  @include section-spacing;
+  display: flex;
+  justify-content: center;
+  
+  @media (max-width: 968px) {
+    max-width: 100%;
+    padding-right: 1rem;
+  }
+  
+  .scroll-content {
+    max-width: 600px;
+    
+    .section-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      @include text-gradient;
+      
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+    }
+    
+    .section-description {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: $text-color;
+      margin-bottom: 2rem;
+      
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      p {
+        margin-bottom: 1rem;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    
+    .section-content {
+      margin-bottom: 2rem;
+      
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: $text-color;
+        margin-bottom: 1rem;
+      }
+      
+      ul, ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+        
+        li {
+          margin-bottom: 0.5rem;
+          line-height: 1.5;
+        }
+      }
+    }
+    
+    // Features List
+    .features-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      
+      li {
+        position: relative;
+        padding: 0.75rem 0 0.75rem 2rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        line-height: 1.5;
+        
+        &::before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          top: 0.75rem;
+          color: $primary-color;
+          font-weight: bold;
+          font-size: 1.2rem;
+        }
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Image Panel
+.image-panel {
+  flex: 1;
+  max-width: 50%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  
+  @media (max-width: 968px) {
+    display: none; // Hide on mobile for better UX
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .parallax-bg {
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+  }
+  
+  .no-image-placeholder {
+    @include flex-center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, $light-bg, #e9ecef);
+    color: #6c757d;
+    text-align: center;
+    
+    .placeholder-content {
+      .placeholder-icon {
+        font-size: 4rem;
+        display: block;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+      
+      .placeholder-text {
+        font-size: 1.25rem;
+        font-weight: 500;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      
+      p {
+        font-size: 0.9rem;
+        opacity: 0.7;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Reverse Layout (for alternating sections)
+.pinned-section.reverse {
+  flex-direction: row-reverse;
+  
+  .content-panel {
+    padding-left: 2rem;
+    padding-right: 4rem;
+    
+    @media (max-width: 768px) {
+      padding-left: 1rem;
+      padding-right: 2rem;
+    }
+    
+
+  }
+  
+  .section-number {
+    right: auto;
+    left: 2rem;
+    
+    @media (max-width: 768px) {
+      left: 1rem;
+    }
+  }
+}
+
+// No Sections Message
+.no-sections-message {
+  @include flex-center;
+  min-height: 50vh;
+  text-align: center;
+  padding: 4rem 2rem;
+  
+  .message-content {
+    max-width: 600px;
+    
+    h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: $text-color;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: #6c757d;
+    }
+    
+    .add-section-btn {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: $primary-color;
+      color: $white;
+      text-decoration: none;
+      border-radius: $border-radius;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: darken($primary-color, 10%);
+        transform: translateY(-2px);
+        box-shadow: $shadow;
+      }
+    }
+    
+    .debug-info {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: $light-bg;
+      border-radius: $border-radius;
+      font-size: 0.9rem;
+      text-align: left;
+      border: 1px solid #dee2e6;
+    }
+  }
+}
+
+// Debug Content
+.debug-content {
+  background: rgba($primary-color, 0.1);
+  padding: 2rem;
+  border-radius: $border-radius;
+  margin-top: 2rem;
+  
+  p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+// Progress Bar
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+  
+  .progress-fill {
+    height: 100%;
+    background: $primary-color;
+    transform-origin: left;
+    transition: transform 0.1s ease;
+  }
+}
+
+// Mobile Specific Styles
+@media (max-width: 968px) {
+  .pinned-sections-container {
+    // On mobile, sections stack vertically instead of horizontal scroll
+    .pinned-section {
+      width: 100%;
+      height: auto;
+      min-height: 100vh;
+      position: relative;
+      flex-direction: column;
+      
+      .content-panel {
+        max-width: 100%;
+        padding: 2rem 1rem;
+      }
+      
+      .image-panel {
+        display: block;
+        max-width: 100%;
+        height: 50vh;
+        order: -1; // Put image first on mobile
+      }
+      
+      &.reverse {
+        .image-panel {
+          order: 1; // Put image last on reverse sections
+        }
+      }
+    }
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .pinned-section {
+    .parallax-bg {
+      transform: none !important;
+    }
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .section-title {
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    color: #000 !important;
+  }
+  
+  .scroll-progress .progress-fill {
+    background: #000 !important;
+  }
+}
