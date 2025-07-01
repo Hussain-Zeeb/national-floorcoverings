@@ -1,0 +1,45 @@
+.text-category-color {
+    color: var(--category-color) !important;
+}
+
+.download-link {
+    svg {
+        width: 30px;
+        fill: var(--category-color);
+
+        &:hover {
+            fill: $paragon-404; // Assuming $paragon-404 is defined in your SCSS variables
+        }
+    }
+}
+
+
+.btn {
+    padding: 20px 40px;
+    background: transparent;
+    color: $white !important;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid $white;
+    transition: background 0.3s ease;
+    display: inline-block !important;
+    text-align: center;
+
+    &:hover {
+        background: $paragon-404; // Button color on hover
+    }
+}
+
+
+
+#pair-with.no,
+#gallery-carousel.no {
+    display: none !important;
+}
+
+/* If ACF field is "yes", ensure it's visible */
+#pair-with.yes,
+#gallery-carousel.yes
+ {
+    display: block !important;
+}

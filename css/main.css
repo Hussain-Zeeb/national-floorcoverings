@@ -1,0 +1,142 @@
+.font_primary {
+  font-family: var(--e-global-typography-primary-font-family) !important;
+  font-weight: var(--e-global-typography-primary-font-weight) !important;
+}
+.font_secondary {
+  font-family: var(--e-global-typography-secondary-font-family) !important;
+  font-weight: var(--e-global-typography-secondary-font-weight) !important;
+}
+.font_text {
+  font-family: var(--e-global-typography-text-font-family) !important;
+  font-weight: var(--e-global-typography-text-font-weight) !important;
+}
+.font_accent-text {
+  font-family: var(--e-global-typography-accent-font-family) !important;
+  font-size: var(--e-global-typography-accent-font-size) !important;
+  font-weight: var(--e-global-typography-accent-font-weight) !important;
+}
+.font_body-copy {
+  font-family: var(--e-global-typography-b1168ea-font-family) !important;
+  font-size: var(--e-global-typography-b1168ea-font-size) !important;
+  font-weight: var(--e-global-typography-b1168ea-font-weight) !important;
+}
+.font_brand-sub-headings {
+  font-family: var(--e-global-typography-7c047ad-font-family) !important;
+  font-size: var(--e-global-typography-7c047ad-font-size) !important;
+  font-weight: var(--e-global-typography-7c047ad-font-weight) !important;
+  line-height: var(--e-global-typography-7c047ad-line-height) !important;
+}
+.font_tiny-caps {
+  font-family: var(--e-global-typography-f66c0aa-font-family) !important;
+  font-size: var(--e-global-typography-f66c0aa-font-size) !important;
+}
+.font_small-regular {
+  font-family: var(--e-global-typography-dd2caac-font-family) !important;
+  font-size: var(--e-global-typography-dd2caac-font-size) !important;
+}
+.font_body-copy-bold {
+  font-family: var(--e-global-typography-5667676-font-family) !important;
+  font-size: var(--e-global-typography-5667676-font-size) !important;
+  font-weight: var(--e-global-typography-5667676-font-weight) !important;
+}
+.font_small-bold {
+  font-family: var(--e-global-typography-fff01fc-font-family) !important;
+  font-size: var(--e-global-typography-fff01fc-font-size) !important;
+}
+.font_bask-sub-headings {
+  font-family: var(--e-global-typography-f472c41-font-family) !important;
+  font-size: var(--e-global-typography-f472c41-font-size) !important;
+  line-height: var(--e-global-typography-f472c41-line-height) !important;
+}
+.font_entry-points {
+  font-family: var(--e-global-typography-5a38271-font-family) !important;
+  font-size: var(--e-global-typography-5a38271-font-size) !important;
+}
+.font_matworks-brandon-headings {
+  font-family: var(e-global-typography-17bbee4-font-family) !important;
+  font-size: var(--e-global-typography-17bbee4-font-size) !important;
+  line-height: var(--e-global-typography-17bbee4-line-height) !important;
+}
+.font_matworks-brandon-headings-copy {
+  font-family: var(e-global-typography-49f819a-font-family) !important;
+  font-size: var(--e-global-typography-49f819a-font-size) !important;
+  line-height: var(--e-global-typography-49f819a-line-height) !important;
+}
+
+.text-category-color {
+  color: var(--category-color) !important;
+}
+
+.download-link svg {
+  width: 30px;
+  fill: var(--category-color);
+}
+.download-link svg:hover {
+  fill: var(--e-global-color-secondary);
+}
+
+.btn {
+  padding: 20px 40px;
+  background: transparent;
+  color: var(--e-global-color-d57d2c8) !important;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid var(--e-global-color-d57d2c8);
+  transition: background 0.3s ease;
+  display: inline-block !important;
+  text-align: center;
+}
+.btn:hover {
+  background: var(--e-global-color-secondary);
+}
+
+#pair-with.no,
+#gallery-carousel.no {
+  display: none !important;
+}
+
+/* If ACF field is "yes", ensure it's visible */
+#pair-with.yes,
+#gallery-carousel.yes {
+  display: block !important;
+}
+
+.font_primary-headline {
+  font-size: var(--e-global-typography-primary-font-size);
+  font-weight: var(--e-global-typography-primary-font-weight);
+  line-height: var(--e-global-typography-primary-line-height);
+}
+.font_secondary-headline {
+  font-size: var(--e-global-typography-secondary-font-size);
+  font-weight: var(--e-global-typography-secondary-font-weight);
+  line-height: var(--e-global-typography-secondary-line-height);
+}
+.font_body-light {
+  font-size: var(--e-global-typography-text-font-size);
+  font-weight: var(--e-global-typography-text-font-weight);
+  line-height: var(--e-global-typography-text-line-height);
+}
+.font_third-headline {
+  font-size: var(--e-global-typography-94d9e13-font-size);
+  font-weight: var(--e-global-typography-94d9e13-font-weight);
+  line-height: var(--e-global-typography-94d9e13-line-height);
+}
+.font_fourth-headline {
+  font-size: var(--e-global-typography-88961d5-font-size);
+  font-weight: var(--e-global-typography-88961d5-font-weight);
+  line-height: var(--e-global-typography-88961d5-line-height);
+  letter-spacing: var(--e-global-typography-88961d5-letter-spacing);
+}
+.font_fifth-headline {
+  font-size: var(--e-global-typography-0b51f40-font-size) !important;
+  font-weight: var(--e-global-typography-0b51f40-font-weight);
+  line-height: var(--e-global-typography-0b51f40-line-height);
+}
+.font_accent-text {
+  font-size: var(--e-global-typography-accent-font-size) !important;
+  font-weight: var(--e-global-typography-accent-font-weight) !important;
+}
+.font_regular {
+  font-size: var(--e-global-typography-27649b5-font-size);
+  font-weight: var(--e-global-typography-27649b5-font-weight);
+}

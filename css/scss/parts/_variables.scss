@@ -1,0 +1,104 @@
+// Breakpoints
+$breakpoint-mobile: 767px;
+$breakpoint-tablet: 1024px;
+
+// Colours
+$paragon-black:var(--e-global-color-primary);
+$paragon-404:var(--e-global-color-secondary);
+$white:var(--e-global-color-d57d2c8);
+$elemental:var(--e-global-color-1d5c4c1);
+$design-loop:var(--e-global-color-3445e24);
+$vinyl:var(--e-global-color-127bff0);
+$loop-pile:var(--e-global-color-76eab55);
+$cut-pile:var(--e-global-color-ecd6b8c);
+$matworks-main:var(--e-global-color-5663838);
+$matworks-green:var(--e-global-color-359c405);
+
+
+
+.font {
+    &_primary {
+        font-family: var(--e-global-typography-primary-font-family) !important;
+        font-weight:var(--e-global-typography-primary-font-weight) !important;
+    }
+    &_secondary {
+        font-family: var(--e-global-typography-secondary-font-family) !important;
+        font-weight:var(--e-global-typography-secondary-font-weight)!important;
+
+    }
+    &_text {
+        font-family: var(--e-global-typography-text-font-family) !important;
+        font-weight:var(--e-global-typography-text-font-weight) !important;
+    }
+    &_accent-text {
+        font-family: var(--e-global-typography-accent-font-family) !important;
+        font-size:var(--e-global-typography-accent-font-size) !important;
+        font-weight:var(--e-global-typography-accent-font-weight) !important;
+    }
+
+    
+
+    &_body-copy {
+        font-family: var(--e-global-typography-b1168ea-font-family) !important;
+        font-size:var(--e-global-typography-b1168ea-font-size) !important;
+        font-weight:var(--e-global-typography-b1168ea-font-weight) !important;
+    }
+
+    &_brand-sub-headings {
+        font-family: var(--e-global-typography-7c047ad-font-family) !important;
+        font-size:var(--e-global-typography-7c047ad-font-size) !important;
+        font-weight:var(--e-global-typography-7c047ad-font-weight) !important;
+        line-height:var(--e-global-typography-7c047ad-line-height) !important;
+    }
+
+    &_tiny-caps {
+        font-family: var(--e-global-typography-f66c0aa-font-family) !important;
+        font-size:var(--e-global-typography-f66c0aa-font-size) !important;
+    }
+
+    &_small-regular {
+        font-family: var(--e-global-typography-dd2caac-font-family) !important;
+        font-size:var(--e-global-typography-dd2caac-font-size) !important;
+    }
+
+    &_body-copy-bold {
+        font-family: var(--e-global-typography-5667676-font-family) !important;
+        font-size:var(--e-global-typography-5667676-font-size) !important;
+        font-weight:var(--e-global-typography-5667676-font-weight) !important;
+    }
+
+    &_small-bold {
+        font-family: var(--e-global-typography-fff01fc-font-family) !important;
+        font-size:var(--e-global-typography-fff01fc-font-size) !important;
+    }
+
+    &_bask-sub-headings {
+        font-family: var(--e-global-typography-f472c41-font-family) !important;
+        font-size:var(--e-global-typography-f472c41-font-size) !important;
+        line-height:var(--e-global-typography-f472c41-line-height) !important;
+    }
+
+    &_entry-points {
+        font-family: var(--e-global-typography-5a38271-font-family) !important;
+        font-size:var(--e-global-typography-5a38271-font-size) !important;
+    }
+
+
+    &_matworks-brandon-headings {
+        font-family: var(e-global-typography-17bbee4-font-family) !important;
+        font-size:var(--e-global-typography-17bbee4-font-size) !important;
+        line-height:var(--e-global-typography-17bbee4-line-height) !important;
+    }
+
+    &_matworks-brandon-headings-copy {
+        font-family: var(e-global-typography-49f819a-font-family) !important;
+        font-size:var(--e-global-typography-49f819a-font-size) !important;
+        line-height:var(--e-global-typography-49f819a-line-height) !important;
+    }
+
+
+
+
+
+
+}
