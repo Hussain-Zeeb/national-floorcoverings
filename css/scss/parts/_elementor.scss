@@ -1,0 +1,27 @@
+
+.elementor-location-footer a {
+    position: relative; /* Needed for absolute positioning of the pseudo-element */
+    display: inline-block;
+    padding-bottom: 5px; /* Ensures space for the border */
+    text-decoration: none; 
+    color: $white !important;
+}
+
+.elementor-location-footer a::after {
+    content: ''; /* Required for pseudo-element */
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px; 
+    background-color: $white;
+    transition: width 0.3s ease-in-out; 
+}
+
+.elementor-location-footer a:hover {
+    color: $white !important;
+}
+
+.elementor-location-footer a:hover::after {
+    width: 100%;
+}

@@ -4,9 +4,9 @@ $breakpoint-tablet: 1024px;
 
 // Colours
 $navy-blue:var(--e-global-color-dfbfc24);
-$white: #ffffff;
-$orange: #6c757d;
-$darkorange: #343a40;
+$light-beige:var(--e-global-color-31f6cfe);
+$white: var(--e-global-color-514276bf);
+
 
 
 
@@ -39,11 +39,11 @@ $darkorange: #343a40;
         font-weight:var(--e-global-typography-b1168ea-font-weight) !important;
     }
 
-    &_brand-sub-headings {
-        font-family: var(--e-global-typography-7c047ad-font-family) !important;
-        font-size:var(--e-global-typography-7c047ad-font-size) !important;
-        font-weight:var(--e-global-typography-7c047ad-font-weight) !important;
-        line-height:var(--e-global-typography-7c047ad-line-height) !important;
+    &_brandon-regular {
+        font-family: var(--e-global-typography-5036237-font-family) !important;
+        font-size:var(--e-global-typography-5036237-font-size) !important;
+        font-weight:var(--e-global-typography-5036237-font-weight) !important;
+        line-height:var(--e-global-typography-5036237-line-height) !important;
     }
 
     &_tiny-caps {

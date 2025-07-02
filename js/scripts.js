@@ -11,28 +11,119 @@ if (typeof gsap !== 'undefined') {
     console.log("GSAP plugins registered globally");
 }
 
+// IMMEDIATELY hide the page content to prevent flashing
+document.documentElement.classList.add('loading-active');
+
 // Main initialization with proper sequence
 document.addEventListener("DOMContentLoaded", (event) => {
-    // First initialize smooth scrolling (must be before any animations)
-    const smoother = initSmoothScrolling();
+    // Initialize preloader FIRST - before anything else
+    initBrandPreloader();
     
-    // Then initialize all other animations with proper timing
-    setTimeout(() => {
-        // Make smoother globally accessible
-        window.smoother = smoother;
-        
-        // Header mask effect
-        initHeaderMask(smoother);
-        
-        // Pinned sections (if they exist)
-        initPinnedSections();
-        
-        // Force refresh ScrollTrigger after all initializations
-        ScrollTrigger.refresh();
-        
-        console.log("All animations initialized");
-    }, 500);
+    // All other initializations happen in the preloader's onComplete callback
 });
+
+
+/**
+ * Initialize brand preloader with color transitions
+ */
+function initBrandPreloader() {
+    // Create preloader elements
+    const preloader = document.createElement('div');
+    preloader.className = 'site-preloader';
+    
+    // Add your brand logo - update the src with your actual logo path
+    preloader.innerHTML = `
+        <div class="preloader-content">
+            <img src="/wp-content/uploads/2020/08/national-floorcoverings-logo.png" alt="Logo" class="preloader-logo">
+        </div>
+    `;
+    document.body.appendChild(preloader);
+    
+    // Prevent scrolling during load
+    document.body.style.overflow = 'hidden';
+    
+    // Set up animation timeline with GSAP
+    const tl = gsap.timeline({
+        onComplete: () => {
+            // After animation completes, remove preloader and initialize site
+            preloader.remove();
+            document.body.style.overflow = '';
+            document.documentElement.classList.remove('loading-active');
+            
+            // Initialize ScrollSmoother after preloader is gone
+            const smoother = initSmoothScrolling();
+            
+            // Then initialize other animations
+            setTimeout(() => {
+                // Make smoother globally accessible
+                window.smoother = smoother;
+                
+                // Header mask effect
+                initHeaderMask(smoother);
+                
+                // Pinned sections (if they exist)
+                initPinnedSections();
+
+                // Initialize scrolling marquee
+                initScrollMarquee();
+                
+                // Force refresh ScrollTrigger after all initializations
+                ScrollTrigger.refresh();
+                
+                console.log("All animations initialized");
+            }, 300);
+        }
+    });
+    
+    // Animation sequence
+    tl
+        // Initial state - logo invisible
+        .set('.preloader-logo', { 
+            opacity: 0, 
+            scale: 0.8,
+             
+        })
+        
+        // Step 1: Fade in logo
+        .to('.preloader-logo', { 
+            opacity: 1, 
+            scale: 1, 
+            duration: 1.2, 
+            ease: "power2.out" 
+        })
+        
+        // Step 2: First background color change (after short pause)
+        .to('.site-preloader', { 
+            backgroundColor: '#1a365d', // First color - navy blue
+            duration: 0.8,
+            delay: 0.3,
+            ease: "power1.inOut"
+        })
+        
+        // Step 3: Second background color change
+        .to('.site-preloader', { 
+            backgroundColor: '#ff4500', // Second color - orange
+            duration: 0.8,
+            ease: "power1.inOut"
+        })
+        
+        // Step 4: Third background color change
+        .to('.site-preloader', { 
+            backgroundColor: '#1a365d', // Back to navy blue
+            duration: 0.8,
+            ease: "power1.inOut"
+        })
+        
+        // Step 5: Fade out everything
+        .to('.site-preloader', { 
+            opacity: 0, 
+            duration: 0.8, 
+            ease: "power2.inOut"
+        });
+    
+    return preloader;
+}
+
 
 /**
  * Initialize smooth scrolling with ScrollSmoother
@@ -52,6 +143,7 @@ function initSmoothScrolling() {
     console.log("ScrollSmoother initialized");
     return smoother;
 }
+
 
 /**
  * Header Mask Scroll Effect with GSAP (ScrollSmoother Compatible)
@@ -83,7 +175,7 @@ function initHeaderMask(smoother) {
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10;
+            z-index: 1;
             opacity: 0;
             pointer-events: none;
             transform: translateY(100vh); /* Start below viewport */
@@ -112,7 +204,7 @@ function initHeaderMask(smoother) {
         opacity: 0,
         y: '100vh' // Start below viewport
     }, {
-        opacity: 0.9,
+        opacity: 1,
         y: 0,
         ease: "power2.out"
     });
@@ -127,6 +219,78 @@ function initHeaderMask(smoother) {
     }
     
     console.log('Header mask animation created (ScrollSmoother compatible)');
+}
+
+/**
+ * Scrolling text marquee Animation
+ * Creates a horizontal scrolling text effect
+ */
+function initScrollMarquee() {
+    const marquee = document.querySelector('.scroll-marquee-text');
+    const wrap = document.querySelector('.scroll-marquee-wrap');
+    if (!marquee || !wrap) return;
+
+    // Duplicate the text for seamless looping if not already duplicated
+    if (!marquee.dataset.looped) {
+        const original = marquee.innerHTML;
+        let repeatCount = 1;
+        // Repeat until the marquee is at least 6x the wrap width
+        while (marquee.scrollWidth < wrap.offsetWidth * 6 && repeatCount < 10) {
+            marquee.innerHTML += original;
+            repeatCount++;
+        }
+        marquee.dataset.looped = "true";
+    }
+
+    // Calculate the width of one set of text
+    const textWidth = marquee.scrollWidth / 2;
+    const distance = textWidth;
+
+    // Autoplay timeline (seamless loop)
+    const autoplay = gsap.to(marquee, {
+        x: -distance,
+        duration: 25,
+        ease: "none",
+        repeat: -1,
+        modifiers: {
+            x: gsap.utils.unitize(x => parseFloat(x) % -distance)
+        }
+    });
+
+    let isScrolling = false;
+    let scrollTimeout = null;
+
+        ScrollTrigger.create({
+            trigger: wrap,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+            onUpdate: self => {
+                if (self.isActive && self.direction !== 0) {
+                    if (!isScrolling) {
+                        isScrolling = true;
+                        autoplay.pause();
+                    }
+                    // Seamless scroll with modulus
+                    const scrollX = -distance * self.progress;
+                    gsap.to(marquee, {
+                        x: ((scrollX % -distance) + -distance) % -distance, // always positive modulus
+                        duration: 0.1,
+                        overwrite: "auto",
+                        ease: "none"
+                    });
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        isScrolling = false;
+                        // Calculate progress (0-1) for the current scroll position
+                        let progress = ((scrollX % -distance) + -distance) % -distance / -distance;
+                        progress = (progress + 1) % 1; // ensure 0 <= progress < 1
+                        autoplay.progress(progress);
+                        autoplay.play();
+                    }, 200);
+                }
+            }
+        });
 }
 
 /**
@@ -204,22 +368,22 @@ function initPinnedSections() {
             }
         });
         
-        // Animate content scrolling within the pinned section
-        if (scrollContent.scrollHeight > viewportHeight) {
-            gsap.fromTo(scrollContent, {
-                y: 0
-            }, {
-                y: -(scrollContent.scrollHeight - viewportHeight + 100),
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top top',
-                    end: `+=${scrollDistance}`,
-                    scrub: 1,
-                    invalidateOnRefresh: true
-                }
-            });
-        }
+        // Always animate scrollContent, even if no scroll is needed
+        const scrollAmount = Math.max(scrollContent.scrollHeight - viewportHeight + 600, 0);
+
+        gsap.fromTo(scrollContent, {
+            y: 0
+        }, {
+            y: -scrollAmount,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: section,
+                start: 'top top',
+                end: `+=${scrollDistance}`,
+                scrub: 1,
+                invalidateOnRefresh: true
+            }
+        });
         
         // Parallax effect for background images
         const parallaxBg = section.querySelector('.parallax-bg');

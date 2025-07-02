@@ -39,6 +39,8 @@ if ($sections_query->have_posts()) : ?>
             // Get ACF fields
             $section_title = get_field('title');
             $section_description = get_field('description');
+            $button_text = get_field('button_text');
+            $button_url = get_field('button_url');
             
             // Debug ACF fields
             // error_log('ACF Title: ' . ($section_title ?: 'empty'));
@@ -74,7 +76,13 @@ if ($sections_query->have_posts()) : ?>
                                 ?>
                             </div>
                         <?php endif; ?>
-                                                
+
+                        <?php if ($button_text && $button_url) : ?>
+                            <a class="section-btn" href="<?php echo esc_url($button_url); ?>">
+                                <?php echo esc_html($button_text); ?>
+                            </a>
+                        <?php endif; ?>
+
 
                         <?php
                         // Check for additional ACF fields that might be lists or features
