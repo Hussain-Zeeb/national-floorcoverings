@@ -225,291 +225,154 @@ function initHeaderMask(smoother) {
  * Scrolling text marquee Animation
  * Creates a horizontal scrolling text effect
  */
-function initScrollMarquee() {
-    const marquee = document.querySelector('.scroll-marquee-text');
-    const wrap = document.querySelector('.scroll-marquee-wrap');
-    if (!marquee || !wrap) return;
-
-    // Duplicate the text for seamless looping if not already duplicated
-    if (!marquee.dataset.looped) {
-        const original = marquee.innerHTML;
-        let repeatCount = 1;
-        // Repeat until the marquee is at least 6x the wrap width
-        while (marquee.scrollWidth < wrap.offsetWidth * 6 && repeatCount < 10) {
-            marquee.innerHTML += original;
-            repeatCount++;
-        }
-        marquee.dataset.looped = "true";
-    }
-
-    // Calculate the width of one set of text
-    const textWidth = marquee.scrollWidth / 2;
-    const distance = textWidth;
-
-    // Autoplay timeline (seamless loop)
-    const autoplay = gsap.to(marquee, {
-        x: -distance,
-        duration: 25,
-        ease: "none",
-        repeat: -1,
-        modifiers: {
-            x: gsap.utils.unitize(x => parseFloat(x) % -distance)
-        }
-    });
-
-    let isScrolling = false;
-    let scrollTimeout = null;
-
-        ScrollTrigger.create({
-            trigger: wrap,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-            onUpdate: self => {
-                if (self.isActive && self.direction !== 0) {
-                    if (!isScrolling) {
-                        isScrolling = true;
-                        autoplay.pause();
-                    }
-                    // Seamless scroll with modulus
-                    const scrollX = -distance * self.progress;
-                    gsap.to(marquee, {
-                        x: ((scrollX % -distance) + -distance) % -distance, // always positive modulus
-                        duration: 0.1,
-                        overwrite: "auto",
-                        ease: "none"
-                    });
-                    clearTimeout(scrollTimeout);
-                    scrollTimeout = setTimeout(() => {
-                        isScrolling = false;
-                        // Calculate progress (0-1) for the current scroll position
-                        let progress = ((scrollX % -distance) + -distance) % -distance / -distance;
-                        progress = (progress + 1) % 1; // ensure 0 <= progress < 1
-                        autoplay.progress(progress);
-                        autoplay.play();
-                    }, 200);
-                }
-            }
-        });
-}
-
-/**
- * Pinned Sections Animation
- * Creates scroll-triggered vertical pinned sections with smooth animations
- */
 function initPinnedSections() {
-    // Check if we have pinned sections
     const container = document.querySelector('.pinned-sections-container');
     if (!container) return;
-    
+
     const sections = container.querySelectorAll('.pinned-section');
     if (sections.length === 0) return;
-    
+
     console.log(`Found ${sections.length} pinned sections`);
-    
-    // Set initial visibility and positioning
+
+    // Initial styling
     sections.forEach((section, index) => {
-        // Make sure sections are visible initially
         gsap.set(section, {
             position: 'relative',
             width: '100%',
             minHeight: '100vh',
             display: 'flex',
             opacity: 1,
-            visibility: 'visible'
+            visibility: 'visible',
+            zIndex: index + 1 // Higher index sections stack behind
         });
-        
-        // Set up content and image panels
+
         const contentPanel = section.querySelector('.content-panel');
         const imagePanel = section.querySelector('.image-panel');
-        
+
         if (contentPanel) {
-            gsap.set(contentPanel, {
-                opacity: 1,
-                visibility: 'visible'
-            });
+            gsap.set(contentPanel, { opacity: 1, visibility: 'visible' });
         }
-        
         if (imagePanel) {
-            gsap.set(imagePanel, {
-                opacity: 1,
-                visibility: 'visible'
-            });
+            gsap.set(imagePanel, { opacity: 1, visibility: 'visible' });
         }
     });
-    
-    // Create pinned scroll effect for each section
-    sections.forEach((section, index) => {
-        const contentPanel = section.querySelector('.content-panel');
-        const imagePanel = section.querySelector('.image-panel');
-        const scrollContent = section.querySelector('.scroll-content');
-        
-        if (!contentPanel || !imagePanel || !scrollContent) return;
-        
-        // Calculate scroll distance based on content height
-        const contentHeight = scrollContent.scrollHeight;
-        const viewportHeight = window.innerHeight;
-        const scrollDistance = Math.max(contentHeight - viewportHeight + 200, 200);
-        
-        // Create ScrollTrigger for this section
-        ScrollTrigger.create({
+
+sections.forEach((section, index) => {
+    const contentPanel = section.querySelector('.content-panel');
+    const imagePanel = section.querySelector('.image-panel');
+    const scrollContent = section.querySelector('.scroll-content');
+
+    if (!contentPanel || !imagePanel || !scrollContent) return;
+
+    const contentHeight = scrollContent.scrollHeight;
+    const viewportHeight = window.innerHeight;
+    const scrollDistance = Math.max(contentHeight - viewportHeight + 600, 600);
+    const scrollAmount = scrollDistance;
+
+    // Timeline to pin and scroll
+    const pinTimeline = gsap.timeline({
+        scrollTrigger: {
             trigger: section,
             start: 'top top',
-            end: `+=${scrollDistance}`,
+            end: `+=${scrollDistance + 500}`,
+            scrub: true,
             pin: true,
             pinSpacing: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
-            onEnter: () => {
-                console.log(`Entering section ${index + 1}`);
-            },
-            onLeave: () => {
-                console.log(`Leaving section ${index + 1}`);
-            }
-        });
-        
-        // Always animate scrollContent, even if no scroll is needed
-        const scrollAmount = Math.max(scrollContent.scrollHeight - viewportHeight + 600, 0);
+            // markers: true,
+            onEnter: () => console.log(`Entering section ${index + 1}`),
+            onLeave: () => console.log(`Leaving section ${index + 1}`)
+        }
+    });
 
-        gsap.fromTo(scrollContent, {
-            y: 0
+    pinTimeline.to({}, { duration: 0.1 }); // Brief pause
+
+    // Scroll content animation happens first
+    pinTimeline.fromTo(scrollContent,
+        { y: -100 },
+        { y: -scrollAmount, ease: 'none', duration: 0.7 } // Takes 70% of timeline
+    );
+
+    // Then scale animation happens
+    pinTimeline.fromTo(section,
+        { scale: 1 },
+        { scale: 0.8, ease: "power2.in", duration: 0.2 } // Takes 20% of timeline
+    );
+
+    // Add manual spacer at end to simulate space after pin
+    const spacer = document.createElement('div');
+    spacer.classList.add('pinned-section-spacer');
+    spacer.style.height = '100vh';
+    spacer.style.pointerEvents = 'none';
+    section.appendChild(spacer);
+
+    // REMOVE OR COMMENT OUT the separate scale animation
+    // This was causing the scale to happen immediately instead of after scroll
+    /*
+    const scaleTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+        }
+    });
+
+    scaleTl.fromTo(section,
+        { scale: 0.8 },
+        { scale: 1, ease: "power2.out", duration: 0.5 }
+    ).to(section,
+        { scale: 0.8, ease: "power2.in", duration: 0.5 }
+    );
+    */
+
+    // Animate content elements in
+    const title = section.querySelector('.section-title');
+    const description = section.querySelector('.section-description');
+    const sectionNumber = section.querySelector('.section-number');
+    const elementsToAnimate = [title, description, sectionNumber].filter(Boolean);
+
+    if (elementsToAnimate.length > 0) {
+        gsap.fromTo(elementsToAnimate, {
+            opacity: 0,
+            y: 50
         }, {
-            y: -scrollAmount,
-            ease: 'none',
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            stagger: 0.2,
+            ease: 'power2.out',
             scrollTrigger: {
                 trigger: section,
-                start: 'top top',
-                end: `+=${scrollDistance}`,
-                scrub: 1,
-                invalidateOnRefresh: true
+                start: 'top 80%',
+                end: 'top 20%',
+                toggleActions: 'play none none reverse'
             }
         });
-        
-        // Parallax effect for background images
-        const parallaxBg = section.querySelector('.parallax-bg');
-        if (parallaxBg) {
-            gsap.fromTo(parallaxBg, {
-                y: '-20%'
-            }, {
-                y: '20%',
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top bottom',
-                    end: 'bottom top',
-                    scrub: true,
-                    invalidateOnRefresh: true
-                }
-            });
-        }
-        
-        // Entrance animations for content elements
-        const title = section.querySelector('.section-title');
-        const description = section.querySelector('.section-description');
-        const sectionNumber = section.querySelector('.section-number');
-        
-        if (title || description || sectionNumber) {
-            const elementsToAnimate = [title, description, sectionNumber].filter(Boolean);
-            
-            gsap.fromTo(elementsToAnimate, {
-                opacity: 0,
-                y: 50
-            }, {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                stagger: 0.2,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 80%',
-                    end: 'top 20%',
-                    toggleActions: 'play none none reverse'
-                }
-            });
-        }
-        
-        // Image reveal animation
-        if (imagePanel) {
-            gsap.fromTo(imagePanel, {
-                opacity: 0,
-                scale: 0.9
-            }, {
-                opacity: 1,
-                scale: 1,
-                duration: 1.2,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 70%',
-                    end: 'top 30%',
-                    toggleActions: 'play none none reverse'
-                }
-            });
-        }
-    });
-    
-    // Progress indicator
-    const progressBar = document.createElement('div');
-    progressBar.className = 'scroll-progress';
-    progressBar.innerHTML = '<div class="progress-fill"></div>';
-    document.body.appendChild(progressBar);
-    
-    gsap.set(progressBar, {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '4px',
-        backgroundColor: 'rgba(0,0,0,0.1)',
-        zIndex: 1000
-    });
-    
-    const progressFill = progressBar.querySelector('.progress-fill');
-    gsap.set(progressFill, {
-        height: '100%',
-        backgroundColor: '#007cba',
-        transformOrigin: 'left',
-        scaleX: 0
-    });
-    
-    // Update progress bar based on overall scroll
-    ScrollTrigger.create({
-        trigger: container,
-        start: 'top top',
-        end: 'bottom bottom',
-        onUpdate: (self) => {
-            gsap.to(progressFill, {
-                scaleX: self.progress,
-                duration: 0.1,
-                ease: 'none'
-            });
-        }
-    });
-    
-    // Responsive handling
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            ScrollTrigger.refresh(true);
-        }, 250);
-    });
-    
-    console.log(`Initialized ${sections.length} vertical pinned sections with GSAP`);
-    
-    // Add debug styles to make sure content is visible
-    if (window.location.search.includes('debug=sections')) {
-        sections.forEach((section, index) => {
-            section.style.border = '2px solid red';
-            section.style.backgroundColor = `rgba(${index * 50}, 100, 200, 0.1)`;
-        });
-        
-        ScrollTrigger.addEventListener('refresh', () => {
-            console.log('ScrollTrigger refreshed');
+    }
+
+    // Image reveal
+    if (imagePanel) {
+        gsap.fromTo(imagePanel, {
+            opacity: 0,
+            scale: 0.9
+        }, {
+            opacity: 1,
+            scale: 1,
+            duration: 1.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: section,
+                start: 'top 70%',
+                end: 'top 30%',
+                toggleActions: 'play none none reverse'
+            }
         });
     }
+});
 }
+
 
 /**
  * jQuery Ready (for other functionality)
