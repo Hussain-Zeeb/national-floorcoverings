@@ -18,7 +18,7 @@ $border-radius: 12px;
 }
 
 @mixin section-spacing {
-  padding: 10rem 2rem 4rem 10rem;
+  padding: 10rem 2rem 4rem 2rem;
   
   @media (max-width: 768px) {
     padding: 2rem 1rem;
@@ -48,7 +48,7 @@ $border-radius: 12px;
 .pinned-section {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 180vh;
   display: flex;
   overflow: hidden;
   box-shadow: 4px 4px 41px #ccc;

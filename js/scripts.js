@@ -345,86 +345,57 @@ function initPinnedSections() {
             scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: `+=${scrollDistance + 800}`, // Extra time for smooth transition
+                end: `+=${scrollDistance + 1000}`, // Extra time for smooth transition
                 scrub: 1,
                 pin: true,
                 pinSpacing: false,
                 anticipatePin: 1,
+                markers: true,
                 invalidateOnRefresh: true,
                 onEnter: () => console.log(`Entering section ${index + 1}`),
                 onLeave: () => console.log(`Leaving section ${index + 1}`)
             }
         });
 
+
+        // Phase 0: Scale up as section enters
+        if (index !== 0) {
+            masterTimeline.fromTo(section, {
+                scale: 0.95
+            }, {
+                scale: 1,
+                ease: 'power2.out',
+                duration: 0.5
+            }, 0);
+        }
+
         // Phase 1: Brief pause to let section settle
-        masterTimeline.to({}, { duration: 0.5 });
+        masterTimeline.to({}, { duration: 0.2 });
 
         // Phase 2: Scroll content (takes 60% of timeline)
         masterTimeline.fromTo(scrollContent, {
             y: 0
         }, {
             y: -scrollDistance,
-            ease: 'none',
-            duration: 0.5
+            ease: 'power1.inOut',
+            duration: 1
         });
 
-        // Phase 3: Hold position (let scroll-content finish completely)
-        masterTimeline.to({}, { duration: 0.55 });
-
-        // Phase 4: Scale down and move up (takes 25% of timeline)
+        if (index !== 3) {
+        // Phase 3: Scale down and move up
         masterTimeline.fromTo(section, {
             scale: 1,
-            y: 0
         }, {
-            scale: 0.8,
-            y: -200, // Move up instead of using marginTop
+            scale: 0.9,
             ease: 'power2.inOut',
-            duration: 0.15
+            duration: 1
         });
-
-        // Content animations (separate from main timeline)
-        const title = section.querySelector('.section-title');
-        const description = section.querySelector('.section-description');
-        const sectionNumber = section.querySelector('.section-number');
-        const elementsToAnimate = [title, description, sectionNumber].filter(Boolean);
-
-        if (elementsToAnimate.length > 0) {
-            gsap.fromTo(elementsToAnimate, {
-                opacity: 0,
-                y: 50
-            }, {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                stagger: 0.2,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 80%',
-                    end: 'top 20%',
-                    toggleActions: 'play none none reverse'
-                }
-            });
         }
 
-        // Image reveal (separate from main timeline)
-        if (imagePanel) {
-            gsap.fromTo(imagePanel, {
-                opacity: 0,
-                scale: 0.9
-            }, {
-                opacity: 1,
-                scale: 1,
-                duration: 1.2,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 70%',
-                    end: 'top 30%',
-                    toggleActions: 'play none none reverse'
-                }
-            });
-        }
+
+
+
+
     });
 }
 
