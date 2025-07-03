@@ -221,10 +221,82 @@ function initHeaderMask(smoother) {
     console.log('Header mask animation created (ScrollSmoother compatible)');
 }
 
+
 /**
  * Scrolling text marquee Animation
  * Creates a horizontal scrolling text effect
  */
+function initScrollMarquee() {
+    const marquee = document.querySelector('.scroll-marquee-text');
+    const wrap = document.querySelector('.scroll-marquee-wrap');
+    if (!marquee || !wrap) return;
+
+    // Duplicate the text for seamless looping if not already duplicated
+    if (!marquee.dataset.looped) {
+        const original = marquee.innerHTML;
+        let repeatCount = 1;
+        // Repeat until the marquee is at least 6x the wrap width
+        while (marquee.scrollWidth < wrap.offsetWidth * 6 && repeatCount < 10) {
+            marquee.innerHTML += original;
+            repeatCount++;
+        }
+        marquee.dataset.looped = "true";
+    }
+
+    // Calculate the width of one set of text
+    const textWidth = marquee.scrollWidth / 2;
+    const distance = textWidth;
+
+    // Autoplay timeline (seamless loop)
+    const autoplay = gsap.to(marquee, {
+        x: -distance,
+        duration: 25,
+        ease: "none",
+        repeat: -1,
+        modifiers: {
+            x: gsap.utils.unitize(x => parseFloat(x) % -distance)
+        }
+    });
+
+    let isScrolling = false;
+    let scrollTimeout = null;
+
+        ScrollTrigger.create({
+            trigger: wrap,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+            onUpdate: self => {
+                if (self.isActive && self.direction !== 0) {
+                    if (!isScrolling) {
+                        isScrolling = true;
+                        autoplay.pause();
+                    }
+                    // Seamless scroll with modulus
+                    const scrollX = -distance * self.progress;
+                    gsap.to(marquee, {
+                        x: ((scrollX % -distance) + -distance) % -distance, // always positive modulus
+                        duration: 0.1,
+                        overwrite: "auto",
+                        ease: "none"
+                    });
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        isScrolling = false;
+                        // Calculate progress (0-1) for the current scroll position
+                        let progress = ((scrollX % -distance) + -distance) % -distance / -distance;
+                        progress = (progress + 1) % 1; // ensure 0 <= progress < 1
+                        autoplay.progress(progress);
+                        autoplay.play();
+                    }, 200);
+                }
+            }
+        });
+}
+
+
+
+
 function initPinnedSections() {
     const container = document.querySelector('.pinned-sections-container');
     if (!container) return;
@@ -234,7 +306,7 @@ function initPinnedSections() {
 
     console.log(`Found ${sections.length} pinned sections`);
 
-    // Initial styling
+    // Initial styling - NO z-index at all
     sections.forEach((section, index) => {
         gsap.set(section, {
             position: 'relative',
@@ -243,7 +315,7 @@ function initPinnedSections() {
             display: 'flex',
             opacity: 1,
             visibility: 'visible',
-            zIndex: index + 1 // Higher index sections stack behind
+            transformOrigin: 'bottom center'
         });
 
         const contentPanel = section.querySelector('.content-panel');
@@ -257,120 +329,103 @@ function initPinnedSections() {
         }
     });
 
-sections.forEach((section, index) => {
-    const contentPanel = section.querySelector('.content-panel');
-    const imagePanel = section.querySelector('.image-panel');
-    const scrollContent = section.querySelector('.scroll-content');
+    sections.forEach((section, index) => {
+        const contentPanel = section.querySelector('.content-panel');
+        const imagePanel = section.querySelector('.image-panel');
+        const scrollContent = section.querySelector('.scroll-content');
 
-    if (!contentPanel || !imagePanel || !scrollContent) return;
+        if (!contentPanel || !imagePanel || !scrollContent) return;
 
-    const contentHeight = scrollContent.scrollHeight;
-    const viewportHeight = window.innerHeight;
-    const scrollDistance = Math.max(contentHeight - viewportHeight + 600, 600);
-    const scrollAmount = scrollDistance;
+        const contentHeight = scrollContent.scrollHeight;
+        const viewportHeight = window.innerHeight;
+        const scrollDistance = Math.max(contentHeight - viewportHeight, 0);
 
-    // Timeline to pin and scroll
-    const pinTimeline = gsap.timeline({
-        scrollTrigger: {
-            trigger: section,
-            start: 'top top',
-            end: `+=${scrollDistance + 500}`,
-            scrub: true,
-            pin: true,
-            pinSpacing: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            // markers: true,
-            onEnter: () => console.log(`Entering section ${index + 1}`),
-            onLeave: () => console.log(`Leaving section ${index + 1}`)
-        }
-    });
-
-    pinTimeline.to({}, { duration: 0.1 }); // Brief pause
-
-    // Scroll content animation happens first
-    pinTimeline.fromTo(scrollContent,
-        { y: -100 },
-        { y: -scrollAmount, ease: 'none', duration: 0.7 } // Takes 70% of timeline
-    );
-
-    // Then scale animation happens
-    pinTimeline.fromTo(section,
-        { scale: 1 },
-        { scale: 0.8, ease: "power2.in", duration: 0.2 } // Takes 20% of timeline
-    );
-
-    // Add manual spacer at end to simulate space after pin
-    const spacer = document.createElement('div');
-    spacer.classList.add('pinned-section-spacer');
-    spacer.style.height = '100vh';
-    spacer.style.pointerEvents = 'none';
-    section.appendChild(spacer);
-
-    // REMOVE OR COMMENT OUT the separate scale animation
-    // This was causing the scale to happen immediately instead of after scroll
-    /*
-    const scaleTl = gsap.timeline({
-        scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-        }
-    });
-
-    scaleTl.fromTo(section,
-        { scale: 0.8 },
-        { scale: 1, ease: "power2.out", duration: 0.5 }
-    ).to(section,
-        { scale: 0.8, ease: "power2.in", duration: 0.5 }
-    );
-    */
-
-    // Animate content elements in
-    const title = section.querySelector('.section-title');
-    const description = section.querySelector('.section-description');
-    const sectionNumber = section.querySelector('.section-number');
-    const elementsToAnimate = [title, description, sectionNumber].filter(Boolean);
-
-    if (elementsToAnimate.length > 0) {
-        gsap.fromTo(elementsToAnimate, {
-            opacity: 0,
-            y: 50
-        }, {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            stagger: 0.2,
-            ease: 'power2.out',
+        // Use a single timeline for everything - no conflicts
+        const masterTimeline = gsap.timeline({
             scrollTrigger: {
                 trigger: section,
-                start: 'top 80%',
-                end: 'top 20%',
-                toggleActions: 'play none none reverse'
+                start: 'top top',
+                end: `+=${scrollDistance + 800}`, // Extra time for smooth transition
+                scrub: 1,
+                pin: true,
+                pinSpacing: false,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+                onEnter: () => console.log(`Entering section ${index + 1}`),
+                onLeave: () => console.log(`Leaving section ${index + 1}`)
             }
         });
-    }
 
-    // Image reveal
-    if (imagePanel) {
-        gsap.fromTo(imagePanel, {
-            opacity: 0,
-            scale: 0.9
+        // Phase 1: Brief pause to let section settle
+        masterTimeline.to({}, { duration: 0.5 });
+
+        // Phase 2: Scroll content (takes 60% of timeline)
+        masterTimeline.fromTo(scrollContent, {
+            y: 0
         }, {
-            opacity: 1,
+            y: -scrollDistance,
+            ease: 'none',
+            duration: 0.5
+        });
+
+        // Phase 3: Hold position (let scroll-content finish completely)
+        masterTimeline.to({}, { duration: 0.55 });
+
+        // Phase 4: Scale down and move up (takes 25% of timeline)
+        masterTimeline.fromTo(section, {
             scale: 1,
-            duration: 1.2,
-            ease: 'power2.out',
-            scrollTrigger: {
-                trigger: section,
-                start: 'top 70%',
-                end: 'top 30%',
-                toggleActions: 'play none none reverse'
-            }
+            y: 0
+        }, {
+            scale: 0.8,
+            y: -200, // Move up instead of using marginTop
+            ease: 'power2.inOut',
+            duration: 0.15
         });
-    }
-});
+
+        // Content animations (separate from main timeline)
+        const title = section.querySelector('.section-title');
+        const description = section.querySelector('.section-description');
+        const sectionNumber = section.querySelector('.section-number');
+        const elementsToAnimate = [title, description, sectionNumber].filter(Boolean);
+
+        if (elementsToAnimate.length > 0) {
+            gsap.fromTo(elementsToAnimate, {
+                opacity: 0,
+                y: 50
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    end: 'top 20%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        }
+
+        // Image reveal (separate from main timeline)
+        if (imagePanel) {
+            gsap.fromTo(imagePanel, {
+                opacity: 0,
+                scale: 0.9
+            }, {
+                opacity: 1,
+                scale: 1,
+                duration: 1.2,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 70%',
+                    end: 'top 30%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        }
+    });
 }
 
 
