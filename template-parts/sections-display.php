@@ -54,96 +54,97 @@ if ($sections_query->have_posts()) : ?>
             ?>
             
             <div class="pinned-section <?php echo $reverse_class; ?>" data-section="<?php echo $section_count; ?>">
-                <!-- Section Number -->
-                <div class="section-number"><?php echo str_pad($section_count, 2, '0', STR_PAD_LEFT); ?></div>
                 
-                <!-- Content Panel -->
-                <div class="content-panel">
-                    <div class="scroll-content">
-                        <?php if ($display_title) : ?>
-                            <h2 class="section-title"><?php echo esc_html($display_title); ?></h2>
-                        <?php endif; ?>
-                        
-                        <?php if ($section_description) : ?>
-                            <div class="section-description">
-                                <?php 
-                                // Handle different field types (WYSIWYG, textarea, text)
-                                if (is_array($section_description)) {
-                                    echo wp_kses_post(implode(' ', $section_description));
-                                } else {
-                                    echo wp_kses_post(wpautop($section_description));
-                                }
-                                ?>
-                            </div>
-                        <?php endif; ?>
+                    <!-- Section Number -->
+                    <div class="section-number"><?php echo str_pad($section_count, 2, '0', STR_PAD_LEFT); ?></div>
+                    
+                    <!-- Content Panel -->
+                    <div class="content-panel">
+                        <div class="scroll-content">
+                            <?php if ($display_title) : ?>
+                                <h2 class="section-title"><?php echo esc_html($display_title); ?></h2>
+                            <?php endif; ?>
+                            
+                            <?php if ($section_description) : ?>
+                                <div class="section-description">
+                                    <?php 
+                                    // Handle different field types (WYSIWYG, textarea, text)
+                                    if (is_array($section_description)) {
+                                        echo wp_kses_post(implode(' ', $section_description));
+                                    } else {
+                                        echo wp_kses_post(wpautop($section_description));
+                                    }
+                                    ?>
+                                </div>
+                            <?php endif; ?>
 
-                        <?php if ($button_text && $button_url) : ?>
-                            <a class="section-btn" href="<?php echo esc_url($button_url); ?>">
-                                <?php echo esc_html($button_text); ?>
-                            </a>
-                        <?php endif; ?>
+                            <?php if ($button_text && $button_url) : ?>
+                                <a class="section-btn" href="<?php echo esc_url($button_url); ?>">
+                                    <?php echo esc_html($button_text); ?>
+                                </a>
+                            <?php endif; ?>
 
 
-                        <?php
-                        // Check for additional ACF fields that might be lists or features
-                        $additional_fields = get_fields();
-                        if ($additional_fields) :
-                            foreach ($additional_fields as $field_name => $field_value) :
-                                if (in_array($field_name, ['title', 'description'])) continue; // Skip already displayed fields
-                                
-                                if (is_array($field_value) && !empty($field_value)) : ?>
-                                    <div class="section-field section-<?php echo esc_attr($field_name); ?>">
-                                        <?php if (isset($field_value[0]['feature_text'])) : // Repeater field ?>
-                                            <ul class="features-list">
-                                                <?php foreach ($field_value as $item) : ?>
-                                                    <li><?php echo esc_html($item['feature_text']); ?></li>
-                                                <?php endforeach; ?>
-                                            </ul>
-                                        <?php elseif (is_array($field_value)) : // Simple array ?>
-                                            <ul class="features-list">
-                                                <?php foreach ($field_value as $item) : ?>
-                                                    <li><?php echo esc_html($item); ?></li>
-                                                <?php endforeach; ?>
-                                            </ul>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php endif;
-                            endforeach;
-                        endif; ?>
-                        
-                        <?php if (empty($display_title) && empty($section_description) && empty(get_the_content())) : ?>
-                            <div class="debug-content">
-                                <p><strong>Debug Info:</strong></p>
-                                <p>Post Title: <?php echo get_the_title(); ?></p>
-                                <p>Post ID: <?php echo get_the_ID(); ?></p>
-                                <p>Post Type: <?php echo get_post_type(); ?></p>
-                                <p>ACF Fields: <?php echo function_exists('get_fields') ? 'Available' : 'Not Available'; ?></p>
-                                <?php if (function_exists('get_fields')) : ?>
-                                    <p>All Fields: <?php var_dump(get_fields()); ?></p>
-                                <?php endif; ?>
+                            <?php
+                            // Check for additional ACF fields that might be lists or features
+                            $additional_fields = get_fields();
+                            if ($additional_fields) :
+                                foreach ($additional_fields as $field_name => $field_value) :
+                                    if (in_array($field_name, ['title', 'description'])) continue; // Skip already displayed fields
+                                    
+                                    if (is_array($field_value) && !empty($field_value)) : ?>
+                                        <div class="section-field section-<?php echo esc_attr($field_name); ?>">
+                                            <?php if (isset($field_value[0]['feature_text'])) : // Repeater field ?>
+                                                <ul class="features-list">
+                                                    <?php foreach ($field_value as $item) : ?>
+                                                        <li><?php echo esc_html($item['feature_text']); ?></li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                            <?php elseif (is_array($field_value)) : // Simple array ?>
+                                                <ul class="features-list">
+                                                    <?php foreach ($field_value as $item) : ?>
+                                                        <li><?php echo esc_html($item); ?></li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif;
+                                endforeach;
+                            endif; ?>
+                            
+                            <?php if (empty($display_title) && empty($section_description) && empty(get_the_content())) : ?>
+                                <div class="debug-content">
+                                    <p><strong>Debug Info:</strong></p>
+                                    <p>Post Title: <?php echo get_the_title(); ?></p>
+                                    <p>Post ID: <?php echo get_the_ID(); ?></p>
+                                    <p>Post Type: <?php echo get_post_type(); ?></p>
+                                    <p>ACF Fields: <?php echo function_exists('get_fields') ? 'Available' : 'Not Available'; ?></p>
+                                    <?php if (function_exists('get_fields')) : ?>
+                                        <p>All Fields: <?php var_dump(get_fields()); ?></p>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Panel -->
+                    <div class="image-panel">
+                        <?php if (has_post_thumbnail()) : ?>
+                            <?php 
+                            $featured_image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
+                            $image_alt = get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', true);
+                            ?>
+                            <div class="parallax-bg" style="background-image: url(<?php echo esc_url($featured_image[0]); ?>)"></div>
+                        <?php else : ?>
+                            <div class="no-image-placeholder">
+                                <div class="placeholder-content">
+                                    <span class="placeholder-icon">🖼️</span>
+                                    <span class="placeholder-text">No featured image</span>
+                                    <p><small>Post ID: <?php echo get_the_ID(); ?></small></p>
+                                </div>
                             </div>
                         <?php endif; ?>
                     </div>
-                </div>
-                
-                <!-- Image Panel -->
-                <div class="image-panel">
-                    <?php if (has_post_thumbnail()) : ?>
-                        <?php 
-                        $featured_image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
-                        $image_alt = get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', true);
-                        ?>
-                        <div class="parallax-bg" style="background-image: url(<?php echo esc_url($featured_image[0]); ?>)"></div>
-                    <?php else : ?>
-                        <div class="no-image-placeholder">
-                            <div class="placeholder-content">
-                                <span class="placeholder-icon">🖼️</span>
-                                <span class="placeholder-text">No featured image</span>
-                                <p><small>Post ID: <?php echo get_the_ID(); ?></small></p>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                </div>
             </div>
             
         <?php endwhile; ?>

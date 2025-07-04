@@ -191,6 +191,9 @@ body.is-scrolling-smoothly {
   will-change: transform;
   pointer-events: none;
   user-select: none;
+  opacity: 0;
+  transform: translateY(50px);
+  will-change: opacity, transform;
 }
 
 .marquee-below {
@@ -275,6 +278,17 @@ body.is-scrolling-smoothly {
   overflow: hidden;
   box-shadow: 4px 4px 41px #ccc;
   background-color: var(--e-global-color-31f6cfe);
+  /*   .section-overlay {
+
+      position: absolute;
+      inset: 0;
+      //background: rgba(0,0,0,0.95); 
+      opacity: 1;
+      pointer-events: none;
+      z-index: 2;
+      transition: opacity 0.2s;
+      will-change: opacity;
+    } */
 }
 .pinned-section .section-number {
   position: absolute;
@@ -312,9 +326,9 @@ body.is-scrolling-smoothly {
   content: "";
   position: absolute;
   left: 0;
-  bottom: 0;
+  bottom: 74vh;
   width: 100%;
-  height: 40%;
+  height: 100vh;
   pointer-events: none;
   background: linear-gradient(to bottom, transparent 0%, var(--e-global-color-31f6cfe) 100%);
   z-index: 2;

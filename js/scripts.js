@@ -62,10 +62,10 @@ function initBrandPreloader() {
                 initHeaderMask(smoother);
                 
                 // Pinned sections (if they exist)
-                initPinnedSections();
+                initPinnedSections(smoother);
 
                 // Initialize scrolling marquee
-                initScrollMarquee();
+                initScrollMarquee(smoother);
                 
                 // Force refresh ScrollTrigger after all initializations
                 ScrollTrigger.refresh();
@@ -148,7 +148,7 @@ function initSmoothScrolling() {
 /**
  * Header Mask Scroll Effect with GSAP (ScrollSmoother Compatible)
  */
-function initHeaderMask(smoother) {
+function initHeaderMask() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
         console.log('GSAP or ScrollTrigger not loaded yet');
         return;
@@ -235,13 +235,21 @@ function initScrollMarquee() {
     if (!marquee.dataset.looped) {
         const original = marquee.innerHTML;
         let repeatCount = 1;
-        // Repeat until the marquee is at least 6x the wrap width
         while (marquee.scrollWidth < wrap.offsetWidth * 6 && repeatCount < 10) {
             marquee.innerHTML += original;
             repeatCount++;
         }
         marquee.dataset.looped = "true";
     }
+
+
+        // Upward reveal animation
+        gsap.to(marquee, {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "elastic.out(1,0.3)"
+        });
 
     // Calculate the width of one set of text
     const textWidth = marquee.scrollWidth / 2;
@@ -250,7 +258,7 @@ function initScrollMarquee() {
     // Autoplay timeline (seamless loop)
     const autoplay = gsap.to(marquee, {
         x: -distance,
-        duration: 25,
+        duration: 40,
         ease: "none",
         repeat: -1,
         modifiers: {
@@ -261,37 +269,27 @@ function initScrollMarquee() {
     let isScrolling = false;
     let scrollTimeout = null;
 
-        ScrollTrigger.create({
-            trigger: wrap,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-            onUpdate: self => {
-                if (self.isActive && self.direction !== 0) {
-                    if (!isScrolling) {
-                        isScrolling = true;
-                        autoplay.pause();
-                    }
-                    // Seamless scroll with modulus
-                    const scrollX = -distance * self.progress;
-                    gsap.to(marquee, {
-                        x: ((scrollX % -distance) + -distance) % -distance, // always positive modulus
-                        duration: 0.1,
-                        overwrite: "auto",
-                        ease: "none"
-                    });
-                    clearTimeout(scrollTimeout);
-                    scrollTimeout = setTimeout(() => {
-                        isScrolling = false;
-                        // Calculate progress (0-1) for the current scroll position
-                        let progress = ((scrollX % -distance) + -distance) % -distance / -distance;
-                        progress = (progress + 1) % 1; // ensure 0 <= progress < 1
-                        autoplay.progress(progress);
-                        autoplay.play();
-                    }, 200);
+    ScrollTrigger.create({
+        trigger: wrap,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1,
+        onUpdate: self => {
+            if (self.isActive && self.direction !== 0) {
+                if (!isScrolling) {
+                    isScrolling = true;
+                    autoplay.pause();
                 }
+                // Set the timeline's progress directly based on scroll
+                autoplay.progress(self.progress, false);
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    isScrolling = false;
+                    autoplay.play();
+                }, 200);
             }
-        });
+        }
+    });
 }
 
 
@@ -377,19 +375,35 @@ function initPinnedSections() {
             y: 0
         }, {
             y: -scrollDistance,
-            ease: 'power1.inOut',
+            ease: 'none',
             duration: 1
         });
 
-        if (index !== 3) {
+
         // Phase 3: Scale down and move up
-        masterTimeline.fromTo(section, {
-            scale: 1,
-        }, {
-            scale: 0.9,
-            ease: 'power2.inOut',
-            duration: 1
-        });
+        if (index !== sections.length - 1) {
+        
+            const overlay = section.querySelector('.section-overlay');
+
+            masterTimeline.fromTo(section, {
+                scale: 1,
+            }, {
+                scale: 0.9,
+                ease: 'power2.inOut',
+                duration: 1
+            });
+
+            // Animate overlay opacity to darken as it scales
+/*             if (overlay) {
+                masterTimeline.fromTo(overlay, {
+                    opacity: 0, // Or your desired value, e.g. 0.3
+                }, {
+                    opacity: 1,
+                    ease: 'power2.inOut',
+                    duration: 1
+                }, "-=1"); // Sync with scale animation
+            } */
+
         }
 
 
