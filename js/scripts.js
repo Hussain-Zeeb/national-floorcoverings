@@ -343,7 +343,7 @@ function initPinnedSections() {
             scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: `+=${scrollDistance + 1000}`, // Extra time for smooth transition
+                end: `+=${scrollDistance + 800}`, // Extra time for smooth transition
                 scrub: 1,
                 pin: true,
                 pinSpacing: false,

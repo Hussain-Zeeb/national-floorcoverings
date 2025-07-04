@@ -326,7 +326,7 @@ body.is-scrolling-smoothly {
   left: 0;
   bottom: 74vh;
   width: 100%;
-  height: 100vh;
+  height: 80vh;
   pointer-events: none;
   background: linear-gradient(to bottom, transparent 0%, var(--e-global-color-31f6cfe) 100%);
   z-index: 2;
@@ -426,7 +426,7 @@ body.is-scrolling-smoothly {
 .image-panel {
   flex: 1;
   max-width: 50%;
-  height: 100vh;
+  height: 180vh;
   position: relative;
   overflow: hidden;
 }
