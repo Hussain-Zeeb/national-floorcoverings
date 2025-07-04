@@ -37,7 +37,7 @@ $border-radius: 12px;
   position: relative;
   width: 100%;
   overflow: hidden;
-  background-color: $light-beige;
+  background-color: $navy-blue;
   
   &.sections-template {
     min-height: 100vh;
@@ -51,20 +51,20 @@ $border-radius: 12px;
   height: 180vh;
   display: flex;
   overflow: hidden;
-  box-shadow: 4px 4px 41px #ccc;
+  //box-shadow: 4px 4px 41px #ccc;
   background-color: $light-beige;
 
-/*   .section-overlay {
+  .section-overlay {
 
     position: absolute;
     inset: 0;
-    //background: rgba(0,0,0,0.95); 
-    opacity: 1;
+    background: rgba(0,0,0,0.5); 
+    opacity: 0;
     pointer-events: none;
     z-index: 2;
     transition: opacity 0.2s;
     will-change: opacity;
-  } */
+  }
   
  
   

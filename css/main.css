@@ -264,7 +264,7 @@ body.is-scrolling-smoothly {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background-color: var(--e-global-color-31f6cfe);
+  background-color: var(--e-global-color-dfbfc24);
 }
 .pinned-sections-container.sections-template {
   min-height: 100vh;
@@ -276,19 +276,17 @@ body.is-scrolling-smoothly {
   height: 180vh;
   display: flex;
   overflow: hidden;
-  box-shadow: 4px 4px 41px #ccc;
   background-color: var(--e-global-color-31f6cfe);
-  /*   .section-overlay {
-
-      position: absolute;
-      inset: 0;
-      //background: rgba(0,0,0,0.95); 
-      opacity: 1;
-      pointer-events: none;
-      z-index: 2;
-      transition: opacity 0.2s;
-      will-change: opacity;
-    } */
+}
+.pinned-section .section-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.2s;
+  will-change: opacity;
 }
 .pinned-section .section-number {
   position: absolute;

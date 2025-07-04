@@ -394,7 +394,7 @@ function initPinnedSections() {
             });
 
             // Animate overlay opacity to darken as it scales
-/*             if (overlay) {
+            if (overlay) {
                 masterTimeline.fromTo(overlay, {
                     opacity: 0, // Or your desired value, e.g. 0.3
                 }, {
@@ -402,7 +402,7 @@ function initPinnedSections() {
                     ease: 'power2.inOut',
                     duration: 1
                 }, "-=1"); // Sync with scale animation
-            } */
+            }
 
         }
 
