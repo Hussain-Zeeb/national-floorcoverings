@@ -9,21 +9,7 @@
 // Debug: Check if we're in the right context
 // error_log('Sections template loaded');
 
-// Check if we have a custom query from shortcode, otherwise create default query
-if (!isset($wp_query) || !$wp_query->have_posts() || $wp_query->get('post_type') !== 'section') {
-    $sections_query = new WP_Query(array(
-        'post_type' => 'section',
-        'post_status' => 'publish',
-        'posts_per_page' => -1,
-        'orderby' => 'menu_order',
-        'order' => 'ASC'
-    ));
-    
-    // Debug: Check query results
-    // error_log('Sections query found: ' . $sections_query->found_posts . ' posts');
-} else {
-    $sections_query = $wp_query;
-}
+
 
 if ($sections_query->have_posts()) : ?>
     <div class="pinned-sections-container sections-template">

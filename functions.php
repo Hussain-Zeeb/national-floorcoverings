@@ -148,6 +148,7 @@ add_action('elementor/page_templates/canvas/after_content', 'add_smooth_wrapper_
  * Usage: [display_sections] or [display_sections category="innovation" limit="5"]
  */
 
+
 function display_sections_shortcode($atts) {
     $atts = shortcode_atts(array(
         'category' => '',
@@ -155,12 +156,8 @@ function display_sections_shortcode($atts) {
         'order' => 'ASC',
         'orderby' => 'menu_order'
     ), $atts);
-    
-    // Store original query
-    global $wp_query;
-    $original_query = $wp_query;
-    
-    // Setup custom query args - Remove the featured image requirement
+
+    // Setup custom query args
     $query_args = array(
         'post_type' => 'section',
         'post_status' => 'publish',
@@ -168,7 +165,7 @@ function display_sections_shortcode($atts) {
         'orderby' => $atts['orderby'],
         'order' => $atts['order']
     );
-    
+
     // Add category filter if specified
     if (!empty($atts['category'])) {
         $query_args['meta_query'] = array(
@@ -179,32 +176,21 @@ function display_sections_shortcode($atts) {
             )
         );
     }
-    
-    // Set global query for template part
-    $wp_query = new WP_Query($query_args);
-    
+
+    // Use a local query variable
+    $sections_query = new WP_Query($query_args);
+
     // Capture output
     ob_start();
+    set_query_var('sections_query', $sections_query);
     get_template_part('template-parts/sections', 'display');
     $output = ob_get_clean();
-    
-    // Restore original query
+
     wp_reset_postdata();
-    $wp_query = $original_query;
-    
+
     return $output;
 }
 add_shortcode('display_sections', 'display_sections_shortcode');
 
-/**
- * Helper function to include sections template part in PHP
- * Usage: display_sections_template(); or display_sections_template('innovation', 5);
- */
-function display_sections_template($category = '', $limit = -1) {
-    echo display_sections_shortcode(array(
-        'category' => $category,
-        'limit' => $limit
-    ));
-}
 
 
