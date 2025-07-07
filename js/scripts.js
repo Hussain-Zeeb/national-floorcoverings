@@ -77,11 +77,19 @@ function initBrandPreloader() {
     
     // Animation sequence
     tl
+
         // Initial state - logo invisible
         .set('.preloader-logo', { 
             opacity: 0, 
             scale: 0.8,
              
+        })
+
+        .to('.site-preloader', { 
+            backgroundColor: '#1a365d', // First color - navy blue
+            duration: 1.4,
+            delay: 0.3,
+            ease: "power1.inOut"
         })
         
         // Step 1: Fade in logo
@@ -89,37 +97,16 @@ function initBrandPreloader() {
             opacity: 1, 
             scale: 1, 
             duration: 1.2, 
-            ease: "power2.out" 
+            ease: "elastic.out(1,0.3)" 
         })
         
-        // Step 2: First background color change (after short pause)
-        .to('.site-preloader', { 
-            backgroundColor: '#1a365d', // First color - navy blue
-            duration: 0.8,
-            delay: 0.3,
-            ease: "power1.inOut"
-        })
-        
-        // Step 3: Second background color change
-        .to('.site-preloader', { 
-            backgroundColor: '#ff4500', // Second color - orange
-            duration: 0.8,
-            ease: "power1.inOut"
-        })
-        
-        // Step 4: Third background color change
-        .to('.site-preloader', { 
-            backgroundColor: '#1a365d', // Back to navy blue
-            duration: 0.8,
-            ease: "power1.inOut"
-        })
-        
-        // Step 5: Fade out everything
         .to('.site-preloader', { 
             opacity: 0, 
-            duration: 0.8, 
+            duration: 1.2, 
             ease: "power2.inOut"
         });
+
+        
     
     return preloader;
 }
@@ -293,7 +280,10 @@ function initScrollMarquee() {
 }
 
 
-
+/**
+ * pinnedSections.js
+ * Creates a pinned scrolling effect for sections
+ */
 
 function initPinnedSections() {
     const container = document.querySelector('.pinned-sections-container');
@@ -412,6 +402,34 @@ function initPinnedSections() {
 
     });
 }
+
+
+
+gsap.from(".text-pop-top", {
+    scrollTrigger: {
+        trigger: ".text-pop-top",
+        start: "top 80%", // Adjust as needed
+    },
+    y: 60,
+    opacity: 0,
+    //scale: 0.8,
+    duration: 1.2,
+    ease: "elastic.out(1, 0.5)"
+});
+
+
+gsap.from(".text-pop-bottom", {
+    scrollTrigger: {
+        trigger: ".text-pop-bottom",
+        start: "top 80%", // Adjust as needed
+    },
+    y: -60,
+    opacity: 0,
+    //scale: 0.8,
+    duration: 1.2,
+    delay: 0.5,
+    ease: "elastic.out(1, 0.5)"
+});
 
 
 /**

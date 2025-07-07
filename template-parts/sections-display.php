@@ -41,7 +41,7 @@ if ($sections_query->have_posts()) : ?>
             
             <div class="pinned-section <?php echo $reverse_class; ?>" data-section="<?php echo $section_count; ?>">
 
-                    <div class="section-overlay"></div>
+                    <!-- <div class="section-overlay"></div> -->
                     <!-- Section Number -->
                     <div class="section-number"><?php echo str_pad($section_count, 2, '0', STR_PAD_LEFT); ?></div>
                     
