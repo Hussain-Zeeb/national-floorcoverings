@@ -1,27 +1,71 @@
-
 .elementor-location-footer a {
-    position: relative; /* Needed for absolute positioning of the pseudo-element */
+    position: relative;
     display: inline-block;
-    padding-bottom: 5px; /* Ensures space for the border */
-    text-decoration: none; 
+    padding-bottom: 5px;
+    text-decoration: none;
     color: $white !important;
+    text-underline-offset: 4px;
+
+    &:focus {
+        outline: 2px solid $white;
+        outline-offset: 2px;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0%;
+        height: 2px;
+        background-color: $white;
+        transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+        pointer-events: none;
+    }
+
+    &:hover,
+    &:focus {
+        color: $white !important;
+
+        &::after {
+            width: 100%;
+        }
+    }
 }
 
-.elementor-location-footer a::after {
-    content: ''; /* Required for pseudo-element */
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0%;
-    height: 2px; 
-    background-color: $white;
-    transition: width 0.3s ease-in-out; 
-}
 
-.elementor-location-footer a:hover {
+
+.main-menu a {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
+    text-decoration: none;
     color: $white !important;
-}
+    text-underline-offset: 4px;
 
-.elementor-location-footer a:hover::after {
-    width: 100%;
+    &:focus {
+        outline: 2px solid $white;
+        outline-offset: 2px;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0%;
+        height: 2px;
+        background-color: $white !important;
+        //transition: width 0.3s cubic-bezier(0.4,0,0.2,1) !important;
+        pointer-events: none;
+    }
+
+    &:hover,
+    &:focus {
+        color: $white !important;
+
+        &::after {
+            width: 100%;
+        }
+    }
 }

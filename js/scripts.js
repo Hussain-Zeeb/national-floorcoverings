@@ -1,9 +1,6 @@
-/**
- * Main GSAP Animations for Yugmnhuydf Theme
- * Includes smooth scrolling, header mask, and pinned sections
- */
-
 var $ = jQuery.noConflict();
+
+
 
 // Register plugins once at the top level
 if (typeof gsap !== 'undefined') {
@@ -23,10 +20,34 @@ document.addEventListener("DOMContentLoaded", (event) => {
 });
 
 
+
+
 /**
- * Initialize brand preloader with color transitions
+ * Initialize brand preloader with color transitions  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
+
 function initBrandPreloader() {
+
+    // Only show preloader if not already shown in this session
+/*     if (sessionStorage.getItem('preloaderShown')) {
+        // Immediately remove loading class and allow scrolling
+        document.documentElement.classList.remove('loading-active');
+        document.body.style.overflow = '';
+        // Initialize everything else immediately
+        const smoother = initSmoothScrolling();
+        setTimeout(() => {
+            window.smoother = smoother;
+            initHeaderMask(smoother);
+            initPinnedSections(smoother);
+            initScrollMarquee(smoother);
+            ScrollTrigger.refresh();
+            console.log("All animations initialized (no preloader)");
+        }, 300);
+        return;
+    } */
+
+    //sessionStorage.setItem('preloaderShown', 'true');
+    
     // Create preloader elements
     const preloader = document.createElement('div');
     preloader.className = 'site-preloader';
@@ -112,9 +133,14 @@ function initBrandPreloader() {
 }
 
 
+
+
+
+
 /**
- * Initialize smooth scrolling with ScrollSmoother
+ * Initialize smooth scrolling with ScrollSmoother  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
+
 function initSmoothScrolling() {
     if (typeof ScrollSmoother === 'undefined') {
         console.log('ScrollSmoother not loaded');
@@ -132,9 +158,12 @@ function initSmoothScrolling() {
 }
 
 
+
+
 /**
- * Header Mask Scroll Effect with GSAP (ScrollSmoother Compatible)
+ * Header Mask Scroll Effect with GSAP (ScrollSmoother Compatible) //////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
+
 function initHeaderMask() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
         console.log('GSAP or ScrollTrigger not loaded yet');
@@ -211,7 +240,7 @@ function initHeaderMask() {
 
 /**
  * Scrolling text marquee Animation
- * Creates a horizontal scrolling text effect
+ * Creates a horizontal scrolling text effect //////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 function initScrollMarquee() {
     const marquee = document.querySelector('.scroll-marquee-text');
@@ -282,7 +311,7 @@ function initScrollMarquee() {
 
 /**
  * pinnedSections.js
- * Creates a pinned scrolling effect for sections
+ * Creates a pinned scrolling effect for sections //////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
 function initPinnedSections() {
@@ -405,6 +434,8 @@ function initPinnedSections() {
 
 
 
+// Text Pop-in Animations //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 gsap.from(".text-pop-top", {
     scrollTrigger: {
         trigger: ".text-pop-top",
@@ -432,9 +463,59 @@ gsap.from(".text-pop-bottom", {
 });
 
 
+// Fade up in animation for elements with class "fade-up-in" //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+gsap.from(".fade-up-in", {
+    scrollTrigger: {
+        trigger: ".fade-up-in", // or a parent container
+        start: "top 80%",
+        toggleActions: "play pause resume reverse"
+    },
+    y: 40,
+    opacity: 0,
+    duration: 1,
+    ease: "power2.out",
+    stagger: 0.2
+});
+
+
+
+
+
+// Header Scroll Effect - Hide on scroll down, show on scroll up //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+let lastScroll = 0;
+const header = document.querySelector('.site-header');
+
+if (header) {
+    window.addEventListener('scroll', function () {
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (currentScroll <= 0) {
+            gsap.to(header, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" });
+            header.classList.remove('header-fixed', 'header-show');
+            return;
+        }
+        if (currentScroll > lastScroll) {
+            // Scrolling down - hide header
+            gsap.to(header, { y: -100, opacity: 0, duration: 0.3, ease: "power2.in" });
+            header.classList.remove('header-show');
+            header.classList.add('header-fixed');
+        } else {
+            // Scrolling up - show header
+            gsap.to(header, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" });
+            header.classList.add('header-fixed', 'header-show');
+        }
+        lastScroll = currentScroll;
+    });
+}
+
+
+
+
 /**
- * jQuery Ready (for other functionality)
+ * jQuery Ready (for other functionality) //////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
+
 $(document).ready(function ($) {
     // Any jQuery specific code goes here
 });

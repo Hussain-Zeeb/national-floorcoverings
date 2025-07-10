@@ -1,0 +1,32 @@
+/* Preloader Styles */
+.site-preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $navy-blue; 
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s ease;
+
+
+    .preloader-content {
+    text-align: center;
+    width: 200px; 
+    height: 200px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+    .preloader-logo {
+    max-width: 80%;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.1));
+    }
+
+
+}
