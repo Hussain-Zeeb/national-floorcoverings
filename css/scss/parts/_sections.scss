@@ -146,7 +146,6 @@ $border-radius: 12px;
       margin-bottom: 2rem;
       
       @media (max-width: 768px) {
-        font-size: 1.1rem;
         margin-bottom: 1.5rem;
       }
       
@@ -397,30 +396,52 @@ $border-radius: 12px;
 // Mobile Specific Styles
 @media (max-width: 968px) {
   .pinned-sections-container {
-    // On mobile, sections stack vertically instead of horizontal scroll
+    // On mobile, sections stack vertically
     .pinned-section {
       width: 100%;
       height: auto;
-      min-height: 100vh;
+      min-height: none;
       position: relative;
       flex-direction: column;
+      margin-bottom: 100px;
       
       .content-panel {
         max-width: 100%;
-        padding: 2rem 1rem;
+        padding: 5rem 1rem;
         background-color: $light-beige;
+
+        &::after {
+
+          display: none;
+        }
+
+        .scroll-content {
+
+          .section-btn {
+
+            margin-top: 30px;
+            display: inline-block;
+          }
+          
+        }
+
       }
       
       .image-panel {
         display: block;
+        flex: 0 1 auto;
         max-width: 100%;
-        height: 50vh;
+        height: 30vh;
         order: -1; // Put image first on mobile
+
+        .parallax-bg {
+          z-index: 0;
+        }
       }
       
       &.reverse {
         .image-panel {
-          order: 1; // Put image last on reverse sections
+          order: -1; 
         }
       }
     }

@@ -315,121 +315,125 @@ function initScrollMarquee() {
  */
 
 function initPinnedSections() {
-    const container = document.querySelector('.pinned-sections-container');
-    if (!container) return;
 
-    const sections = container.querySelectorAll('.pinned-section');
-    if (sections.length === 0) return;
+    if (window.innerWidth > 968) {
+        const container = document.querySelector('.pinned-sections-container');
+        if (!container) return;
 
-    console.log(`Found ${sections.length} pinned sections`);
+        const sections = container.querySelectorAll('.pinned-section');
+        if (sections.length === 0) return;
 
-    // Initial styling - NO z-index at all
-    sections.forEach((section, index) => {
-        gsap.set(section, {
-            position: 'relative',
-            width: '100%',
-            minHeight: '100vh',
-            display: 'flex',
-            opacity: 1,
-            visibility: 'visible',
-            transformOrigin: 'bottom center'
-        });
+        console.log(`Found ${sections.length} pinned sections`);
 
-        const contentPanel = section.querySelector('.content-panel');
-        const imagePanel = section.querySelector('.image-panel');
+        // Initial styling - NO z-index at all
+        sections.forEach((section, index) => {
+            gsap.set(section, {
+                position: 'relative',
+                width: '100%',
+                minHeight: '100vh',
+                display: 'flex',
+                opacity: 1,
+                visibility: 'visible',
+                transformOrigin: 'bottom center'
+            });
 
-        if (contentPanel) {
-            gsap.set(contentPanel, { opacity: 1, visibility: 'visible' });
-        }
-        if (imagePanel) {
-            gsap.set(imagePanel, { opacity: 1, visibility: 'visible' });
-        }
-    });
+            const contentPanel = section.querySelector('.content-panel');
+            const imagePanel = section.querySelector('.image-panel');
 
-    sections.forEach((section, index) => {
-        const contentPanel = section.querySelector('.content-panel');
-        const imagePanel = section.querySelector('.image-panel');
-        const scrollContent = section.querySelector('.scroll-content');
-
-        if (!contentPanel || !imagePanel || !scrollContent) return;
-
-        const contentHeight = scrollContent.scrollHeight;
-        const viewportHeight = window.innerHeight;
-        const scrollDistance = Math.max(contentHeight - viewportHeight, 0);
-
-        // Use a single timeline for everything - no conflicts
-        const masterTimeline = gsap.timeline({
-            scrollTrigger: {
-                trigger: section,
-                start: 'top top',
-                end: `+=${scrollDistance + 800}`, // Extra time for smooth transition
-                scrub: 1,
-                pin: true,
-                pinSpacing: false,
-                anticipatePin: 1,
-                markers: true,
-                invalidateOnRefresh: true,
-                onEnter: () => console.log(`Entering section ${index + 1}`),
-                onLeave: () => console.log(`Leaving section ${index + 1}`)
+            if (contentPanel) {
+                gsap.set(contentPanel, { opacity: 1, visibility: 'visible' });
+            }
+            if (imagePanel) {
+                gsap.set(imagePanel, { opacity: 1, visibility: 'visible' });
             }
         });
 
+        sections.forEach((section, index) => {
+            const contentPanel = section.querySelector('.content-panel');
+            const imagePanel = section.querySelector('.image-panel');
+            const scrollContent = section.querySelector('.scroll-content');
 
-        // Phase 0: Scale up as section enters
-        if (index !== 0) {
-            masterTimeline.fromTo(section, {
-                scale: 0.95
+            if (!contentPanel || !imagePanel || !scrollContent) return;
+
+            const contentHeight = scrollContent.scrollHeight;
+            const viewportHeight = window.innerHeight;
+            const scrollDistance = Math.max(contentHeight - viewportHeight, 0);
+
+            // Use a single timeline for everything - no conflicts
+            const masterTimeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top top',
+                    end: `+=${scrollDistance + 800}`, // Extra time for smooth transition
+                    scrub: 1,
+                    pin: true,
+                    pinSpacing: false,
+                    anticipatePin: 1,
+                    markers: true,
+                    invalidateOnRefresh: true,
+                    onEnter: () => console.log(`Entering section ${index + 1}`),
+                    onLeave: () => console.log(`Leaving section ${index + 1}`)
+                }
+            });
+
+
+            // Phase 0: Scale up as section enters
+            if (index !== 0) {
+                masterTimeline.fromTo(section, {
+                    scale: 0.95
+                }, {
+                    scale: 1,
+                    ease: 'power2.out',
+                    duration: 0.5
+                }, 0);
+            }
+
+            // Phase 1: Brief pause to let section settle
+            masterTimeline.to({}, { duration: 0.2 });
+
+            // Phase 2: Scroll content (takes 60% of timeline)
+            masterTimeline.fromTo(scrollContent, {
+                y: 0
             }, {
-                scale: 1,
-                ease: 'power2.out',
-                duration: 0.5
-            }, 0);
-        }
-
-        // Phase 1: Brief pause to let section settle
-        masterTimeline.to({}, { duration: 0.2 });
-
-        // Phase 2: Scroll content (takes 60% of timeline)
-        masterTimeline.fromTo(scrollContent, {
-            y: 0
-        }, {
-            y: -scrollDistance,
-            ease: 'none',
-            duration: 1
-        });
-
-
-        // Phase 3: Scale down and move up
-        if (index !== sections.length - 1) {
-        
-            const overlay = section.querySelector('.section-overlay');
-
-            masterTimeline.fromTo(section, {
-                scale: 1,
-            }, {
-                scale: 0.9,
-                ease: 'power2.inOut',
+                y: -scrollDistance,
+                ease: 'none',
                 duration: 1
             });
 
-            // Animate overlay opacity to darken as it scales
-            if (overlay) {
-                masterTimeline.fromTo(overlay, {
-                    opacity: 0, // Or your desired value, e.g. 0.3
+
+            // Phase 3: Scale down and move up
+            if (index !== sections.length - 1) {
+            
+                const overlay = section.querySelector('.section-overlay');
+
+                masterTimeline.fromTo(section, {
+                    scale: 1,
                 }, {
-                    opacity: 1,
+                    scale: 0.9,
                     ease: 'power2.inOut',
                     duration: 1
-                }, "-=1"); // Sync with scale animation
+                });
+
+                // Animate overlay opacity to darken as it scales
+                if (overlay) {
+                    masterTimeline.fromTo(overlay, {
+                        opacity: 0, // Or your desired value, e.g. 0.3
+                    }, {
+                        opacity: 1,
+                        ease: 'power2.inOut',
+                        duration: 1
+                    }, "-=1"); // Sync with scale animation
+                }
+
             }
 
-        }
 
 
 
 
+        });
 
-    });
+    }
 }
 
 
