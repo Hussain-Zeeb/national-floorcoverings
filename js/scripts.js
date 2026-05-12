@@ -210,7 +210,7 @@ function initHeaderMask() {
             start: "top top",
             end: "60% top",
             scrub: 1,
-            markers: false,
+            //markers: false,
             invalidateOnRefresh: true
         }
     });
@@ -369,7 +369,7 @@ function initPinnedSections() {
                     pin: true,
                     pinSpacing: false,
                     anticipatePin: 1,
-                    markers: true,
+                    //markers: true,
                     invalidateOnRefresh: true,
                     onEnter: () => console.log(`Entering section ${index + 1}`),
                     onLeave: () => console.log(`Leaving section ${index + 1}`)
